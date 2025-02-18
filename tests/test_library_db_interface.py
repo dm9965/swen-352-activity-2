@@ -1,9 +1,8 @@
 import unittest
 from unittest.mock import Mock, call
 
-from Tools.demo.sortvisu import Array
-
 from library import library_db_interface
+
 
 class TestLibbraryDBInterface(unittest.TestCase):
 
@@ -27,13 +26,18 @@ class TestLibbraryDBInterface(unittest.TestCase):
         data = {'fname': 'name', 'lname': 'name', 'age': 'age', 'memberID': 'memberID',
                 'borrowed_books': []}
         self.db_interface.convert_patron_to_db_format = Mock(return_value=data)
-        self.db_interface.db.insert = Mock(side_effect=lambda x: 10 if x==data else 0)
+        self.db_interface.db.insert = Mock(side_effect=lambda x: 10 if x == data else 0)
         self.assertEqual(self.db_interface.insert_patron(patron_mock), 10)
 
     def test_get_patron_count(self):
         data = [1, 2, 3, 4, 5, 6]
         self.db_interface.db.all = Mock(return_value=data)
         self.assertEqual(self.db_interface.get_patron_count(), len(data))
+
+    def test_get_patrons(self):
+        data = [1, 2, 3, 4, 5, 6]
+        self.db_interface.db.all = Mock(return_value=data)
+        self.assertEqual(self.db_interface.get_all_patrons(), data)
 
     def test_update_patron(self):
         data = {'fname': 'name', 'lname': 'name', 'age': 'age', 'memberID': 'memberID',
@@ -43,6 +47,29 @@ class TestLibbraryDBInterface(unittest.TestCase):
         self.db_interface.db.update = db_update_mock
         self.db_interface.update_patron(Mock())
         db_update_mock.assert_called()
+
+    def test_update_not_patron(self):
+        data = None
+        self.assertEqual(self.db_interface.update_patron(data), None)
+
+    def test_retrieve_patron(self):
+        data = [{'fname': 'name', 'lname': 'name', 'age': 'age', 'memberID': '1234',
+                 'borrowed_books': []}, ]
+        self.db_interface.db.search = Mock(return_value=data)
+        self.assertEqual(self.db_interface.convert_patron_to_db_format(self.db_interface.retrieve_patron('1234')),
+                         data[0])
+
+    def test_retrieve_patron_no_results(self):
+        data = []
+        self.db_interface.db.search = Mock(return_value=data)
+        self.assertIsNone(self.db_interface.retrieve_patron('1234'))
+
+    def test_close_db(self):
+        db_close_mock = Mock()
+        self.db_interface.db.close = db_close_mock
+        self.db_interface.close_db()
+        db_close_mock.assert_called()
+
 
     def test_convert_patron_to_db_format(self):
         patron_mock = Mock()
