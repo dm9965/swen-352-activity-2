@@ -1,5 +1,8 @@
 import unittest
 from unittest.mock import Mock, call
+
+from Tools.demo.sortvisu import Array
+
 from library import library_db_interface
 
 class TestLibbraryDBInterface(unittest.TestCase):
@@ -14,9 +17,9 @@ class TestLibbraryDBInterface(unittest.TestCase):
         self.db_interface.retrieve_patron = Mock(return_value=data)
         self.assertEqual(self.db_interface.insert_patron(patron_mock), None)
 
-    # def test_insert_not_patron(self):
-    #     patron_mock = Mock(re)
-    #     self.assertEqual(self.db_interface.insert_patron(patron_mock), None)
+    def test_insert_not_patron(self):
+        data = None
+        self.assertEqual(self.db_interface.insert_patron(data), None)
 
     def test_insert_patron_not_in_db(self):
         patron_mock = Mock()
@@ -26,6 +29,11 @@ class TestLibbraryDBInterface(unittest.TestCase):
         self.db_interface.convert_patron_to_db_format = Mock(return_value=data)
         self.db_interface.db.insert = Mock(side_effect=lambda x: 10 if x==data else 0)
         self.assertEqual(self.db_interface.insert_patron(patron_mock), 10)
+
+    def test_get_patron_count(self):
+        data = [1, 2, 3, 4, 5, 6]
+        self.db_interface.db.all = Mock(return_value=data)
+        self.assertEqual(self.db_interface.get_patron_count(), len(data))
 
     def test_update_patron(self):
         data = {'fname': 'name', 'lname': 'name', 'age': 'age', 'memberID': 'memberID',
