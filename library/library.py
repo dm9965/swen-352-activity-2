@@ -3,9 +3,9 @@ Filename: library.py
 Description: Library class used for SWEN-352 mocking activity.
 """
 
-from library.library import Patron
-from library.library import Library_DB
-from library.library import Books_API
+from library.patron import Patron
+from library.library_db_interface import Library_DB
+from library.ext_api_interface import Books_API
 
 class Library:
     """Class used to represent a library."""
