@@ -53,6 +53,7 @@ class Library:
         """
         results = self.api.books_by_author(author)
         for result in results:
+            print(result)
             if book.lower() == result.lower():
                 return True
         return False
