@@ -68,7 +68,7 @@ class Library:
         lang_set = set()
         for book in books_info:
             if 'language' in book:
-                lang_set.update(book['language'])
+                lang_set.update(books_info['language']) # was this supposed to be string splicing?
         return lang_set
 
     ############################################################################
