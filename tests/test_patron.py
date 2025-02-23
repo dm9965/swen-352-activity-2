@@ -19,11 +19,10 @@ class TestPatron(unittest.TestCase):
         self.pat.add_borrowed_book(book)
         self.assertIn(book.lower(), self.pat.get_borrowed_books())
 
-    def test_booked_not_added(self):
+    def test_book_already_borrowed(self):
         good_book = "Learning Go"
-        bad_book = "Learning Python"
         self.pat.add_borrowed_book(good_book)
-        self.assertNotIn(bad_book.lower(), self.pat.get_borrowed_books())
+        self.assertEqual(self.pat.add_borrowed_book(good_book), None)
 
     def test_get_borrowed_books(self):
         books = ["Learning Python", "Learning Go", "Learning Rust"]
@@ -83,3 +82,13 @@ class TestPatron(unittest.TestCase):
 
     def test_get_memberID_fail(self):
         self.assertNotEqual(self.pat.get_fname(), "3412")
+
+    def test_patron_equal(self):
+        patron1 = patron.Patron('Jarred', 'Reepmeyer', '23', '1234')
+        patron2 = patron.Patron('Jarred', 'Reepmeyer', '23', '1234')
+        self.assertTrue(patron1 == patron2)
+
+    def test_patron_equal(self):
+        patron1 = patron.Patron('Jarred', 'Reepmeyer', '23', '1234')
+        patron2 = patron.Patron('Billy', 'Bob', '50', '1459')
+        self.assertTrue(patron1 != patron2)
